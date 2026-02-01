@@ -80,7 +80,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 7,
-    match: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{7,}$/
   },
   image: imageSchema,
   address: addressSchema,
@@ -105,7 +104,7 @@ const userSchema = new mongoose.Schema({
   }
 });
 
-userSchema.virtual('isLocked').get(function() {
+userSchema.virtual('isLocked').get(function () {
   return !!(this.lockUntil && this.lockUntil > Date.now());
 });
 
