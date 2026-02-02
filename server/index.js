@@ -148,6 +148,12 @@ if (process.env.NODE_ENV === 'production') {
 // Error handling middleware
 app.use(errorHandler);
 
+// connect to DB first
+await connectDB();
+
+// create initial users + cards
+await initializeData();
+
 // Enhanced server startup
 app.listen(PORT, '0.0.0.0', () => {
   console.log('\n🎉 ===== SERVER STARTED SUCCESSFULLY =====');
