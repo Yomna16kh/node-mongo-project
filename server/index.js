@@ -30,12 +30,12 @@ const initializeDatabase = async () => {
   try {
     console.log('�� Starting Business Cards Management System...');
     console.log('📊 Initializing database connection...');
-    
+
     isDatabaseConnected = await connectDB();
-    
+
     if (isDatabaseConnected) {
       console.log('🎯 Database connection successful - Full functionality enabled');
-      
+
       // Initialize sample data only after successful DB connection
       setTimeout(async () => {
         try {
@@ -44,12 +44,12 @@ const initializeDatabase = async () => {
           console.log('📝 Sample data initialization skipped:', err.message);
         }
       }, 1000);
-      
+
     } else {
       console.log('🧪 Running in development mode - Limited functionality');
       console.log('💡 Install MongoDB locally or use MongoDB Atlas for full features');
     }
-    
+
   } catch (err) {
     console.log('⚠️  Database initialization failed:', err.message);
     console.log('🚀 Application starting without database connection');
@@ -63,8 +63,8 @@ initializeDatabase();
 // Enhanced CORS configuration
 app.use(cors({
   origin: [
-    "http://localhost:5173", 
-    "http://localhost:3000", 
+    "http://localhost:5173",
+    "http://localhost:3000",
     "http://127.0.0.1:5173",
     "http://172.18.0.2:5173" // Docker network support
   ],
@@ -93,8 +93,8 @@ app.get('/', (req, res) => {
 
 // Enhanced health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     message: 'Business Cards Management System is running',
     port: PORT,
     database: isDatabaseConnected ? 'Connected' : 'Development Mode',
@@ -109,7 +109,7 @@ app.get('/api/database-status', (req, res) => {
   res.json({
     connected: isDatabaseConnected,
     mode: isDatabaseConnected ? 'production' : 'development',
-    message: isDatabaseConnected 
+    message: isDatabaseConnected
       ? 'Database connection active - All features available'
       : 'Running in development mode - Data will not persist'
   });
@@ -118,7 +118,7 @@ app.get('/api/database-status', (req, res) => {
 // Routes with database status middleware
 app.use('/api/users', (req, res, next) => {
   if (!isDatabaseConnected && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method)) {
-    return res.status(503).json({ 
+    return res.status(503).json({
       message: 'Database not available. Running in development mode.',
       suggestion: 'Install MongoDB locally or use MongoDB Atlas for full functionality'
     });
@@ -128,7 +128,7 @@ app.use('/api/users', (req, res, next) => {
 
 app.use('/api/cards', (req, res, next) => {
   if (!isDatabaseConnected && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method)) {
-    return res.status(503).json({ 
+    return res.status(503).json({
       message: 'Database not available. Running in development mode.',
       suggestion: 'Install MongoDB locally or use MongoDB Atlas for full functionality'
     });
@@ -139,7 +139,7 @@ app.use('/api/cards', (req, res, next) => {
 // Serve static files from client build
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/dist')));
-  
+
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/dist/index.html'));
   });
